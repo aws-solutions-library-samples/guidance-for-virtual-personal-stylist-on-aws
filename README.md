@@ -63,6 +63,7 @@ The following table provides a sample cost breakdown for deploying this Guidance
 | Amazon API Gateway | 1,000,000 REST API calls per month  | $ 3.50month |
 | Amazon Cognito | 1,000 active users per month without advanced security feature | $ 0.00 | -->
 
+```<div style="overflow-x: auto;">
 | Description | Service | Upfront | Monthly | First 12 months total | Currency | Status | Configuration summary |
 |-------------|----------|---------|---------|------------------------|----------|---------|-------------------------|
 | TextGeneration Lambda | AWS Lambda | 0 | 0 | 0 | USD | | Invoke Mode (Buffered), Architecture (x86), Architecture (x86), Number of requests (10 per hour), Amount of ephemeral storage allocated (512 MB) |
@@ -80,6 +81,8 @@ The following table provides a sample cost breakdown for deploying this Guidance
 | | Amazon Cognito | 0 | 5 | 60 | USD | | Optimization Rate for Token Requests (0), Optimization Rate for App Clients (0), Advanced security features (Enabled), Number of monthly active users (MAU) (100) |
 | | DynamoDB provisioned capacity | 780 | 146.55 | 2538.6 | USD | | Table class (Standard), Average item size (all attributes) (5 KB), Write reserved capacity term (1 year), Read reserved capacity term (1 year), Data storage size (100 GB) |
 | | AWS Lambda | 0 | 14.17 | 170.04 | USD | | Architecture (x86), Architecture (x86), Invoke Mode (Buffered), Amount of ephemeral storage allocated (512 MB), Number of requests (1000000 per month) |
+</div>
+```
 
 ## Prerequisites
 
