@@ -63,7 +63,8 @@ The following table provides a sample cost breakdown for deploying this Guidance
 | Amazon API Gateway | 1,000,000 REST API calls per month  | $ 3.50month |
 | Amazon Cognito | 1,000 active users per month without advanced security feature | $ 0.00 | -->
 
-<div style="overflow-x: auto;">
+<div class="overflow-table">
+
 | Description | Service | Upfront | Monthly | First 12 months total | Currency | Status | Configuration summary |
 |-------------|----------|---------|---------|------------------------|----------|---------|-------------------------|
 | TextGeneration Lambda | AWS Lambda | 0 | 0 | 0 | USD | | Invoke Mode (Buffered), Architecture (x86), Architecture (x86), Number of requests (10 per hour), Amount of ephemeral storage allocated (512 MB) |
