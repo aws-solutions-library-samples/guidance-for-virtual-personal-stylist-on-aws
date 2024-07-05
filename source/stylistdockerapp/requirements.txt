@@ -1,0 +1,9 @@
+streamlit
+streamlit-chat
+boto3
+requests
+pillow
+jsons
+streamlit-cognito-auth
+
+

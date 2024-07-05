@@ -1,0 +1,41 @@
+orders/id,orders/name,orders/description,orders/size,orders/brand,orders/tags/0,orders/tags/1,orders/tags/2,customer/id
+1,Shirt,,M,H&M,white,formal,full sleeve,2
+2,Pant,,XS,Zara,black,formal,,3
+3,Shorts,,L,Louis V,brown,casual,,2
+4,Shoes,,XL,Banana republic,brown,casual,,3
+5,Socks,,L,Guess,brown,formal,,2
+6,Shirt,,M,Target,brown,casual,,2
+7,Shoes,,M,Walmart,brown,casual,,4
+8,Pants,,M,Amazon basics,brown,formal,,2
+9,Tie,,M,Walmart,blue,casual,,5
+10,Jackets,,M,Louis V,maroon,casual,,6
+11,Pant,,M,Louis V,black,Chinos,,2
+12,Jeans,,M,Louis V,black,casual,,7
+13,Shirt,,M,Louis V,maroon,casual,,8
+14,Jackets,,M,Celine,black,formal,,9
+15,Shoes,,M,Tomy,maroon,casual,,10
+16,Jeans,,M,Tomy,blue,formal,,2
+17,Jackets,,M,Tomy,maroon,casual,,2
+18,Shirt,,M,Celine,maroon,casual,,1
+19,Pants,,M,Celine,maroon,casual,,3
+20,Shirt,,M,Celine,maroon,casual,,7
+21,Shirt,,M,H&M,white,formal,full sleeve,2
+22,Pant,,XS,Zara,black,formal,,3
+23,Shorts,,L,Dior,brown,casual,,2
+24,Shoes,,XL,Banana republic,brown,casual,,3
+25,Socks,,L,Guess,brown,formal,,2
+26,Shirt,,M,Target,brown,casual,,2
+27,Shoes,,M,Walmart,brown,casual,,4
+28,Pants,,M,Amazon basics,brown,formal,,2
+29,Tie,,M,Walmart,blue,casual,,5
+30,Jackets,,M,Chanel,maroon,casual,,6
+31,Pant,,M,Gucci,black,Chinos,,2
+32,Jeans,,M,Gucci,black,casual,,7
+33,Shirt,,M,Chanel,maroon,casual,,8
+34,Jackets,,M,Dior,black,formal,,9
+35,Shoes,,M,Gucci,maroon,casual,,10
+36,Jeans,,M,Prada,blue,formal,,2
+37,Jackets,,M,Prada,maroon,casual,,2
+38,Shirt,,M,Prada,maroon,casual,,1
+39,Pants,,M,Dior,maroon,casual,,3
+40,Shirt,,M,Prada,maroon,casual,,7
