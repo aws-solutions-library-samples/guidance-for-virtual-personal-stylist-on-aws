@@ -63,25 +63,25 @@ The following table provides a sample cost breakdown for deploying this Guidance
 | Amazon API Gateway | 1,000,000 REST API calls per month  | $ 3.50month |
 | Amazon Cognito | 1,000 active users per month without advanced security feature | $ 0.00 | -->
 
-<div class="overflow-table">
-| Description | Service | Upfront | Monthly | First 12 months total | Currency | Status | Configuration summary |
-|-------------|----------|---------|---------|------------------------|----------|---------|-------------------------|
-| TextGeneration Lambda | AWS Lambda | 0 | 0 | 0 | USD | | Architecture (x86), Number of requests (10 per hour), Amount of ephemeral storage allocated (512 MB) |
-| | AWS Secrets Manager | 0 | 1.3 | 15.6 | USD | | Number of secrets (2), Average duration of each secret (30 days), Number of API calls (100000 per month) |
-| ImageGeneration Lambda | AWS Lambda | 0 | 0 | 0 | USD | | Architecture (x86), Number of requests (100000 per month), Amount of ephemeral storage allocated (512 MB) |
-| | S3 Standard | 0 | 23.88 | 286.56 | USD | | S3 Standard storage (1 TB per month) |
-| | Application Load Balancer | 0 | 77.75 | 933 | USD | | Number of Application Load Balancers (1) |
-| | AWS Fargate | 0 | 34.15 | 409.8 | USD | | Operating system (Linux), CPU Architecture (ARM), Average duration (20 minutes), Number of tasks or pods (20 per day), Amount of memory allocated (10 GB), Amount of ephemeral storage allocated for Amazon ECS (20 GB) |
-| | Amazon API Gateway | 0 | 62.74 | 752.88 | USD | | Average size of each request (3400 KB), REST API request units (millions), Average message size (32 KB), Requests (10 per month) |
-| | Amazon OpenSearch Service | 0 | 703.2 | 8438.4 | USD | | How many Indexing OCUs? (2), How many Search and Query OCUs? (2), How big is the index data? (100 GB) |
-| | Titan Text Embeddings | 0 | 100 | 1200 | USD | | Number of Input tokens (1000 million per month) |
-| | Titan Multimodal Embeddings | 0 | 220 | 2640 | USD | | Number of Input Images (1 million per month), Number of input tokens (200 million per month) |
-| | AWS Lambda | 0 | 0 | 0 | USD | | Architecture (x86), Amount of ephemeral storage allocated (512 MB), Number of requests (100000 per month) |
-| | AWS Lambda | 0 | 0 | 0 | USD | | Architecture (x86), Amount of ephemeral storage allocated (512 MB), Number of requests (100000 per month) |
-| | Amazon Cognito | 0 | 5 | 60 | USD | | Advanced security features (Enabled), Number of monthly active users (MAU) (100) |
-| | DynamoDB provisioned capacity | 780 | 146.55 | 2538.6 | USD | | Average item size (all attributes) (5 KB), Data storage size (100 GB) |
-| | AWS Lambda | 0 | 14.17 | 170.04 | USD | | Architecture (x86), Amount of ephemeral storage allocated (512 MB), Number of requests (1000000 per month) |
-</div>
+| Description | Service | Upfront [USD] | Monthly [USD] | First 12 months total [USD] | Configuration summary |
+|-------------|----------|--------------|--------------|----------------------------|-------------------------|
+| TextGeneration Lambda | AWS Lambda | 0 | 0 | 0 | Architecture (x86), Number of requests (10 per hour), Amount of ephemeral storage allocated (512 MB) |
+| | AWS Secrets Manager | 0 | 1.3 | 15.6 | Number of secrets (2), Average duration of each secret (30 days), Number of API calls (100000 per month) |
+| ImageGeneration Lambda | AWS Lambda | 0 | 0 | 0 | Architecture (x86), Number of requests (100000 per month), Amount of ephemeral storage allocated (512 MB) |
+| | S3 Standard | 0 | 23.88 | 286.56 | S3 Standard storage (1 TB per month) |
+| | Application Load Balancer | 0 | 77.75 | 933 | Number of Application Load Balancers (1) |
+| | AWS Fargate | 0 | 34.15 | 409.8 | Operating system (Linux), CPU Architecture (ARM), Average duration (20 minutes), Number of tasks or pods (20 per day), Amount of memory allocated (10 GB), Amount of ephemeral storage allocated for Amazon ECS (20 GB) |
+| | Amazon API Gateway | 0 | 62.74 | 752.88 | Average size of each request (3400 KB), REST API request units (millions), Average message size (32 KB), Requests (10 per month) |
+| | Amazon OpenSearch Service | 0 | 703.2 | 8438.4 | How many Indexing OCUs? (2), How many Search and Query OCUs? (2), How big is the index data? (100 GB) |
+| | Titan Text Embeddings | 0 | 100 | 1200 | Number of Input tokens (1000 million per month) |
+| | Titan Multimodal Embeddings | 0 | 220 | 2640 | Number of Input Images (1 million per month), Number of input tokens (200 million per month) |
+| | AWS Lambda | 0 | 0 | 0 | Architecture (x86), Amount of ephemeral storage allocated (512 MB), Number of requests (100000 per month) |
+| | AWS Lambda | 0 | 0 | 0 | Architecture (x86), Amount of ephemeral storage allocated (512 MB), Number of requests (100000 per month) |
+| | Amazon Cognito | 0 | 5 | 60 | Advanced security features (Enabled), Number of monthly active users (MAU) (100) |
+| | DynamoDB provisioned capacity | 780 | 146.55 | 2538.6 | Average item size (all attributes) (5 KB), Data storage size (100 GB) |
+| | AWS Lambda | 0 | 14.17 | 170.04 | Architecture (x86), Amount of ephemeral storage allocated (512 MB), Number of requests (1000000 per month) |
+| | Bedrock Claude Sonnet | 0 | 8100 | 97200 | Text Generation model available on Amazon Bedrock |
+| | Stable Diffusion SDXL 1 | 0 | 4000 | 48000 | Image generation model available on Amazon Bedrock|
 
 ## Prerequisites
 
