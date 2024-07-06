@@ -157,13 +157,87 @@ Check solution demo for more details - [Solution Demo](https://youtu.be/EqJ7TmTb
 
 ## Next Steps
 
-Provide suggestions and recommendations about how customers can modify the parameters and the components of the Guidance to further enhance it according to their requirements.
+Here are some suggestions and recommendations on how customers can modify the parameters and components of the Virtual Personal Stylist application to further enhance it according to their requirements:
+
+1. **Customization of the User Interface (UI)**:
+   - Customers can customize the frontend to match their branding and design requirements.
+   - They can modify the layout, color scheme, and overall aesthetic of the application to provide a seamless and visually appealing experience for their users.
+   - Customers can also integrate the application with their existing web or mobile platforms to provide a more cohesive user experience.
+
+2. **Expansion of the Knowledge Base**:
+   - Customers can expand the knowledge base by ingesting additional data sources, such as industry trends, seasonal fashion information, and user preferences.
+   - This can help improve the quality and relevance of the styling recommendations provided by the application.
+   - Customers can also explore incorporating user feedback and interactions to continuously refine and update the knowledge base.
+
+3. **Integration with External Data Sources**:
+   - Customers can integrate the application with additional data sources, such as social media trends, and inventory management systems.
+   - This can enable more comprehensive and context-aware recommendations, taking into account factors like current fashion trends, and product availability.
+
+4. **Multilingual and Localization Support**:
+   - Customers can extend the application to support multiple languages and cultural preferences, making it accessible to a broader user base.
+   - This may involve translating the user interface, adapting the styling recommendations to local fashion trends, and ensuring the application's content is relevant and appropriate for different regions and demographics.
+
+5. **Integration with E-commerce Platforms**:
+   - Customers can integrate the Virtual Personal Stylist application with their existing e-commerce platforms, enabling seamless product discovery, purchase, and order fulfillment.
+   - This can create a more streamlined and personalized shopping experience for users, where they can directly purchase the recommended items from within the application.
+
+6. **Offline Capabilities and Progressive Web App (PWA) Support**:
+   - Customers can explore building a Progressive Web App (PWA) version of the Virtual Personal Stylist, allowing users to access the application offline and providing a more reliable and responsive experience.
+   - This can be particularly useful for users with intermittent or unreliable internet connectivity, enhancing the accessibility and usability of the application.
+
+7. **Advanced Analytics and Reporting**:
+   - Customers can integrate the application with business intelligence and analytics tools to gain deeper insights into user behavior, recommendation performance, and overall application usage.
+   - This can help customers make data-driven decisions to further optimize the Virtual Personal Stylist and better align it with their business objectives.
+
+By exploring these next steps, customers can tailor the Virtual Personal Stylist application to their specific needs, enhance the user experience, and unlock new opportunities for growth and innovation within their fashion and retail businesses.
 
 ## Cleanup
 
-- In order to make sure all the resources are deleted, 
-- Include detailed instructions, commands, and console actions to delete the deployed Guidance.
-- If the Guidance requires manual deletion of resources, such as the content of an S3 bucket, please specify.
+### Cleanup of CDK-Deployed Resources
+
+1. **Terminate the CDK app**:
+   - Navigate to the CDK app directory in your terminal.
+   - Run the following command to destroy the CDK stack and all the resources it manages:```cdk destroy --all```
+   - This will remove all the AWS resources created by the CDK app, including Lambda functions, DynamoDB tables, S3 buckets, and more.
+
+2. **Verify resource deletion**:
+   - Log in to the AWS Management Console and navigate to the relevant services to ensure all the resources have been successfully deleted.
+
+### Manual Cleanup of Additional Resources
+
+1. **Bedrock Agents**:
+   - Log in to the AWS Management Console and navigate to the Amazon Bedrock service.
+   - Locate the Bedrock agents used by the Virtual Personal Stylist application and delete them manually.
+
+2. **Knowledge Base**:
+   - The knowledge base for the Virtual Personal Stylist application may be stored in an Amazon OpenSearch Service domain or another data storage solution.
+   - Log in to the AWS Management Console and navigate to the appropriate service.
+   - Locate the knowledge base resources and delete them manually.
+
+3. **S3 Bucket Content**:
+   - The Virtual Personal Stylist application may use an S3 bucket to store generated images or other unstructured data.
+   - If the S3 bucket was not managed by the CDK app, you will need to delete the contents of the bucket manually.
+   - Log in to the AWS Management Console and navigate to the S3 service.
+   - Locate the S3 bucket used by the application and delete all the objects within it.
+   - Once the bucket is empty, you can delete the bucket itself.
+
+4. **Secrets Manager Secrets**:
+   - The Virtual Personal Stylist application may use AWS Secrets Manager to store sensitive credentials or other secrets.
+   - If the secrets were not managed by the CDK app, you will need to delete them manually.
+   - Log in to the AWS Management Console and navigate to the Secrets Manager service.
+   - Locate the secrets used by the application and delete them one by one.
+
+5. **Cognito User Pool**:
+   - If the Amazon Cognito user pool was not managed by the CDK app, you will need to delete it manually.
+   - Log in to the AWS Management Console and navigate to the Cognito service.
+   - Locate the user pool used by the Virtual Personal Stylist application and delete it.
+
+6. **AWS WAF Configuration**:
+   - If the AWS WAF configuration was not managed by the CDK app, you will need to delete it manually.
+   - Log in to the AWS Management Console and navigate to the AWS WAF service.
+   - Locate the WAF resources used by the application and delete them one by one.
+
+Remember to double-check that all the resources have been successfully deleted to avoid any unnecessary charges or security concerns.
 
 ## FAQ, known issues, additional considerations, and limitations
 
