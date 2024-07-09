@@ -57,8 +57,9 @@ pool_id = cognito_secrets['pool_id']
 app_client_id = cognito_secrets['app_client_id']
 app_client_secret = cognito_secrets['app_client_secret']
 
+access_token = st.session_state['auth_access_token']
+
 # Initialise CognitoAuthenticator
- # Initialise CognitoAuthenticator
 authenticator = CognitoAuthenticator(
         pool_id=pool_id,
         app_client_id=app_client_id,
@@ -221,7 +222,7 @@ def api_call_text(input_text):
     try:
         response = requests.get(
             api_url,
-            headers={"x-api-key": str(API_KEY)},
+            headers={"x-api-key": str(API_KEY), "Authorization": f"Bearer {access_token}"},
             params=payload,
         )
         response.raise_for_status()  # Check for HTTP errors
@@ -240,7 +241,7 @@ def api_call_image(input_text):
     try:
         response = requests.get(
             api_url,
-            headers={"x-api-key": str(API_KEY)},
+            headers={"x-api-key": str(API_KEY), "Authorization": f"Bearer {access_token}"},
             params=payload,
         )
         response.raise_for_status()  # Check for HTTP errors
@@ -259,7 +260,7 @@ def api_call_database(input_text):
     try:
         response = requests.get(
             api_url,
-            headers={"x-api-key": str(API_KEY)},
+            headers={"x-api-key": str(API_KEY), "Authorization": f"Bearer {access_token}"},
             params=payload,
         )
         response.raise_for_status()  # Check for HTTP errors
