@@ -151,7 +151,7 @@ The the services used in the Guidance do not support all Regions, hence the guid
 7. Install the required dependencies using the command. Please make sure you have installed aws cdk following the pre-requisites :
    ```
    $ pip install -r requirements.txt
-   ```.
+   ```
 8. Initialize CDK within the project using the command:
    ```
    $ cdk init
