@@ -110,6 +110,8 @@ Amazon Bedrock
 - S3 bucket
 - VPC
 - IAM role with specific permissions
+- AWS CLI
+- [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)
 
 ### Requesting Access to AWS Bedrock
 
@@ -126,15 +128,42 @@ The the services used in the Guidance do not support all Regions, hence the guid
 
 ## Deployment Steps
 
-1. Clone this repo to your computer using ```git clone repo-name```
-2. Navigate to the folder: stylistv1 using ```cd stylistv1```
-3. Install packages in requirements using command ```pip install requirement.txt```
-4. This project is a Python Project. Switch to the Virtual Env using the below command: ```$ python3 -m venv .venv```
-5. After the init process completes and the virtualenv is created, you can use the following step to activate your virtualenv. Execute the following to activate the environemnt ```$ source .venv/bin/activate```. If you are a Windows platform, you would activate the virtualenv like this: ```% .venv\Scripts\activate.bat```
-6. Install the required dependencies using the command : ```$ pip install -r requirements.txt```
-7. Initialize CDK within the project using the command: ```$ cdk init```
-8. Bootstrap the CDK environment using the command : ```$ cdk bootstrap```
-9. Deploy the Backend Components running the following command: ```$ cdk deploy --context my_ip={ENTER_YOUR_IP}```
+1. Clone this repo to your computer using
+   ```
+   git clone repo-name
+   ```
+3. Navigate to the folder: stylistv1 using
+   ```
+   cd stylistv1
+   ```
+4. Install packages in requirements using command
+   ```
+   pip install requirement.txt
+   ```
+5. This project is a Python Project. Switch to the Virtual Env using the below command:
+   ```
+   $ python3 -m venv .venv
+   ```
+6. After the init process completes and the virtualenv is created, you can use the following step to activate your virtualenv. Execute the following to activate the environemnt ```$ source .venv/bin/activate```. If you are a Windows platform, you would activate the virtualenv like this:
+   ```
+   % .venv\Scripts\activate.bat
+   ```
+7. Install the required dependencies using the command. Please make sure you have installed aws cdk following the pre-requisites :
+   ```
+   $ pip install -r requirements.txt
+   ```.
+8. Initialize CDK within the project using the command:
+   ```
+   $ cdk init
+   ```
+9. Bootstrap the CDK environment using the command :
+    ```
+   $ cdk bootstrap
+    ```
+11. Deploy the Backend Components running the following command:
+    ```
+    $ cdk deploy --context my_ip={ENTER_YOUR_IP}
+    ```
 
 ## Deployment Validation
 
