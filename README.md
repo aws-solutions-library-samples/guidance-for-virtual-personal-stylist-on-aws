@@ -26,7 +26,7 @@ By using techniques like text and image generation, chat experience, entity extr
 
 ## Architecture Diagram
 
-![Virtual Personal Stylist on AWS Architecture](assets/images/virtual-personal-stylist-architecture.png)
+![Virtual Personal Stylist on AWS Architecture](assets/images/virtual-personal-stylist-architecture-2.png)
 
 ## High-Level Overview and Flow
 
