@@ -20,15 +20,31 @@ This repository contains guidance for implementing an Generative AI powered virt
 
 ## Overview
 
+In the rapidly evolving world of e-commerce, businesses are constantly seeking new ways to enhance customer engagement and provide personalized shopping experiences. The most common challenges faced by Fashion and Apparel customers are:
+
+- Inability to provide their consumers with positive experience in shopping (Like: Solving sizing inconsistencies, Style preferences, Limited personalization, Slow fashion searches that can be improved with AI-driven searches, Pricing transparency, unclear product details and leading to high return rates)
+
+- Updates to legacy platforms are complex to manage with a limited set of features as compared to a new age platform
+
+- Inconsistent brand experience results in isolated brand sites with less reusability that in turn creates high development and maintenance cost
+
+- High platform investment and limited user experience
+
+- The lack of API endpoints in the existing platform prevents customers from scaling their current offerings 
+
+- Scalability of the platform to meet new campaigns/peaks
+
+This is where the power of Generative AI and Amazon Bedrock come into play, enabling the development of solutions like the Virtual Personal Stylist. The virtual personal stylist is a retail solution designed to help e-commerce businesses revolutionize the way they engage with their customers. By leveraging the capabilities of Amazon Bedrock, this solution combines techniques for generating text and images, chat experiences, entity extraction, and retrieval-augmented generation (RAG) to deliver a personalized shopping experience.
+
 This guidance is designed to showcase how you can leverage Amazon Bedrock, that provides knowledge bases and agents, to build a personalized virtual styling assistant. The goal is to create a new shopping experience for customers where they can interact with an AI-powered stylist to help them put together outfits for specific occasions, such as going back to the office.
 
-By using techniques like text and image generation, chat experience, entity extraction, and retrieval-augmented generation (RAG), this guidance demonstrates how you can build an intelligent and engaging virtual styling assistant that can provide personalized recommendations and help customers find the perfect look.
+By integrating with Amazon Bedrock's Knowledge Bases, the virtual personal stylist solution can provide personalized recommendations based on the customer's past purchases and interests, creating a tailored experience that caters to their unique style and needs.
 
-## Architecture Diagram
+Moreover, the solution incorporates a chatbot functionality that allows customers to engage in a conversational interface and ask questions about product reviews, addressing their concerns and building trust. The application can also generate concise summaries of customer reviews, helping shoppers make informed purchasing decisions.
 
-![Virtual Personal Stylist on AWS Architecture](assets/images/virtual-personal-stylist-architecture-2.png)
+To further enhance the customer experience, the virtual personal stylist solution leverages weather data and recommends complementary accessories, ensuring that customers are prepared for their day-to-day activities.
 
-## High-Level Overview and Flow
+Key Features for this solution include:
 
 1. **User Interaction**: The user interacts with the virtual styling assistant through a chat interface, where they can describe their fashion needs, preferences, and any specific occasions they need to dress for.
 
@@ -44,13 +60,44 @@ By using techniques like text and image generation, chat experience, entity extr
 
 By following this architecture, you can build a virtual personal stylist that offers a unique and engaging shopping experience, helping customers find the perfect outfits for their needs and preferences.
 
+## Architecture Diagram
+
+![Virtual Personal Stylist on AWS Architecture](assets/images/virtual-personal-stylist-architecture-2.png)
+
+## High-Level Overview and Flow
+
+1. The app is hosted on Amazon ECS Fargate and served via Amazon CloudFront coupled with AWS Web Application Firewall. 
+
+2. The user authenticates to the application via Amazon Cognito user pools. The application retrieves an API key, URL, and Amazon Cognito user pool ID from AWS Secrets Manager.
+
+3. User query is sent to Amazon API gateway using API URL/key stored in AWS Secrets manager
+
+4. AWS Lambda Text Generation function routed via /text is invoked that calls Amazon Bedrock Agents.
+
+5. Bedrock Agents uses location to determine weather and responds with styling recommendations leveraging data stored in Amazon S3. This data is indexed in Amazon OpenSearch Serverless using Knowledge Bases for Amazon Bedrock.
+
+6. When user clicks on generate image, /image routing triggers Lambda Image Generation function. 
+
+7. Lambda Image Generation function queries Amazon Bedrock Image Generation model, that sends Base64 encoded image back to Lambda function which is fed back to API gateway.
+
+8. When user clicks on Product search feature, the API gateway invokes /search which searches for image embeddings stored in Amazon Dynamo DB. Images stored in S3 triggers Lambda function to create multimodal image embeddings and insert the embeddings in Dynamo DB.
+
+9. Product image search Lambda creates query embeddings and uses cosine similarity to search for similar images from DynamoDB. The top 3 ranked images as a response from API gateway is displayed to the end user in the browser application. 
+
+10. Product Catalog Ingestion pipeline: When user uploads new product catalog files to Amazon S3 bucket, AWS Lambda event is triggered that invokes document ingestion job on Knowledge Bases for Amazon Bedrock. Knowledge bases for Amazon Bedrock creates vector index in vector database i.e. Amazon OpenSearch Serverless. The data becomes searchable as it gets stored and indexed in the vector DB.
+
+11. Image Ingestion Pipeline: When user uploads images from their fashion catalog to Amazon S3 bucket, AWS Lambda event is triggered, which invokes Amazon Titan Multimodal embeddings model available on Amazon Bedrock to create image embeddings of the incoming images. The image embeddings are then indexed and stored in Amazon Dynamo DB. 
+(Note: In production applications, Dynamo DB maybe replaced with Amazon OpenSearch Serverless for storing image embeddings. )
+
 ### Cost
 
-Pricing for Bedrock involves charges for model inference and customization. Checkout the [cost calculator](https://calculator.aws/#/estimate?id=d6c9881b3009a6d2d79466bac141fb029821284c) for deploying this project. Note that some token pricing for 3P models on Amazon Bedrock is not included in the cost calculator.
+Pricing for Bedrock involves charges for model inference and customization. Note that some token pricing for 3P models on Amazon Bedrock is not included in the cost calculator
+
+<!-- Check out the [cost calculator](https://calculator.aws/#/estimate?id=d6c9881b3009a6d2d79466bac141fb029821284c) for deploying this project. -->
 
 *Note: For the most current and detailed pricing information for Amazon Bedrock, please refer to the [Amazon Bedrock Pricing Page](https://aws.amazon.com/bedrock/pricing/).*
 
-We recommend creating a [Budget](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html) through [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/) to help manage costs. Prices are subject to change. For full details, refer to the pricing webpage for each AWS service used in this Guidance._
+_We recommend creating a [Budget](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html) through [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/) to help manage costs. Prices are subject to change. For full details, refer to the pricing webpage for each AWS service used in this Guidance._
 
 ### Sample Cost Table
 
@@ -87,26 +134,22 @@ The following table provides a sample cost breakdown for deploying this Guidance
 
 ### Operating System
 
-- Talk about the base Operating System (OS) and environment that can be used to run or deploy this Guidance, such as *Mac, Linux, or Windows*. Include all installable packages or modules required for the deployment. 
-- By default, assume Amazon Linux 2/Amazon Linux 2023 AMI as the base environment. All packages that are not available by default in AMI must be listed out.  Include the specific version number of the package or module.
-
-**Example:**
-“These deployment instructions are optimized to best work on **<Amazon Linux 2 AMI>**.  Deployment in another OS may require additional steps.”
-
-- Include install commands for packages, if applicable.
+These deployment instructions are optimized to best work on a pre-configured Amazon Linux 2023 AWS Cloud9 development environment. Refer to the [Individual user setup for AWS Cloud9](https://docs.aws.amazon.com/cloud9/latest/user-guide/setup-express.html) for more information on how to set up Cloud9 as a user in the AWS account. Deployment using another OS may require additional steps, and configured python libraries (see [Third-party tools](#third-party-tools)).
 
 ### Third-party tools
 
+Before deploying the guidance code, ensure that the following required tools have been installed:
+
+- AWS Cloud Development Kit (CDK) >= 2.126.0
+- Python >= 3.8
 - Streamlit
 - Openweathermap API
-- Python 3.x
 
 ### AWS account requirements
 
 **Required resources:**
 
-- AWS account with access to Amazon Bedrock
-Amazon Bedrock
+- [Bedrock Model access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) for Claude 3 Sonnet, Stable Diffusion SDXL 1.0 and Amazon Titan Multimodal embeddings
 - S3 bucket
 - VPC
 - IAM role with specific permissions
@@ -126,44 +169,57 @@ Amazon Bedrock
 
 The the services used in the Guidance do not support all Regions, hence the guidance package is well suited to be deployed in `us-west-2` and `us-east-1` region.
 
+### aws cdk bootstrap
+
+This Guidance uses AWS CDK. If you are using aws-cdk for the first time, please see the [Bootstrapping](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) section of the AWS Cloud Development Kit (AWS CDK) v2 developer guide, to provision the required resources, before you can deploy AWS CDK apps into an AWS environment.
+
 ## Deployment Steps
 
-1. Clone this repo to your computer using
+1. In the Cloud9 IDE, use the terminal to clone the repository:
    ```
-   git clone repo-name
+   git clone https://github.com/aws-solutions-library-samples/guidance-for-virtual-personal-stylist-on-aws.git
    ```
-3. Navigate to the folder: stylistv1 using
+
+2. Navigate to the folder: source using
    ```
-   cd stylistv1
+   cd source
    ```
-4. Install packages in requirements using command
+
+3. This project is a Python Project. Switch to the Virtual Env using the below command:
    ```
-   pip install requirement.txt
+   python3 -m venv .venv
    ```
-5. This project is a Python Project. Switch to the Virtual Env using the below command:
+
+4. After the init process completes and the virtualenv is created, you can use the following step to activate your virtualenv. Execute the following to activate the environment: 
    ```
-   $ python3 -m venv .venv
+   source .venv/bin/activate
    ```
-6. After the init process completes and the virtualenv is created, you can use the following step to activate your virtualenv. Execute the following to activate the environemnt ```$ source .venv/bin/activate```. If you are a Windows platform, you would activate the virtualenv like this:
+   If you are a Windows platform, you would activate the virtualenv like this:
    ```
    % .venv\Scripts\activate.bat
    ```
-7. Install the required dependencies using the command. Please make sure you have installed aws cdk following the pre-requisites :
+
+5. Install the required dependencies in the virtual environment. Please make sure you have installed aws cdk following the pre-requisites :
    ```
-   $ pip install -r requirements.txt
+   pip install -r requirements.txt
    ```
-8. Initialize CDK within the project using the command:
+
+6. Initialize CDK within the project using the command:
    ```
-   $ cdk init
+   cdk init
    ```
-9. Bootstrap the CDK environment using the command :
+
+7. Bootstrap the CDK environment using the command :
     ```
-   $ cdk bootstrap
+    cdk bootstrap
     ```
-11. Deploy the Backend Components running the following command:
+
+8. Deploy the Backend Components running the following command:
     ```
-    $ cdk deploy --context my_ip={ENTER_YOUR_IP}
+    cdk deploy --context my_ip={ENTER_YOUR_IP}
     ```
+
+Once you run the above command in cloud 9 environment, it will take approximately *10 minutes* to deploy the entire stack. Note that as part of this stack creation, public IP Address was added in the cdk command as a security measure, such that only the user deploying this stack in their account is able to access the application via Load Balancer which has security group configured to only accept incoming requests from your IP.
 
 ## Deployment Validation
 
