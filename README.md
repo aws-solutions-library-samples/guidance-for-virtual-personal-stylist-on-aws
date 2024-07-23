@@ -201,7 +201,7 @@ This Guidance uses AWS CDK. If you are using aws-cdk for the first time, please 
 
 5. Install the required dependencies in the virtual environment. Please make sure you have installed aws cdk following the pre-requisites :
    ```
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
 
 6. Initialize CDK within the project using the command:
@@ -210,21 +210,26 @@ This Guidance uses AWS CDK. If you are using aws-cdk for the first time, please 
    ```
 
 7. Bootstrap the CDK environment using the command :
-    ```
-    cdk bootstrap
-    ```
+   ```
+   cdk bootstrap
+   ```
 
-8. Deploy the Backend Components running the following command:
-    ```
-    cdk deploy --context my_ip={ENTER_YOUR_IP}
-    ```
+8. Verify that the CDK deployment correctly synthesizes the CloudFormation template:
+   ```
+   cdk synth
+   ```
+
+9. Deploy the Backend Components running the following command:
+   ```
+   cdk deploy --context my_ip={ENTER_YOUR_IP}
+   ```
 
 Once you run the above command in cloud 9 environment, it will take approximately *10 minutes* to deploy the entire stack. Note that as part of this stack creation, public IP Address was added in the cdk command as a security measure, such that only the user deploying this stack in their account is able to access the application via Load Balancer which has security group configured to only accept incoming requests from your IP.
 
 ## Deployment Validation
 
+- To verify a successful deployment of this guidance, open [CloudFormation](https://console.aws.amazon.com/cloudformation/home) console, and verify that the status of the stack named `VirtualStylist` is `CREATE_COMPLETE`.
 - Once the project is deployed, AWS assets are created in your application. You will have a bunch of resources spun up in your AWS account including Lambda functions, S3 bucket, API Gateway, ECR repository and ECS Fargate service.
-- Open CloudFormation console and verify the status of the template with the name starting with `VirtualStylist` with all the resources under `resources` section successfully created. You can navigate to the S3 bucket, Lambda functions, API Gateway or DynamoDB to check the configuration and setup.
 
 ## Running the Guidance
 
