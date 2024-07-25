@@ -194,10 +194,6 @@ This Guidance uses AWS CDK. If you are using aws-cdk for the first time, please 
    ```
    source .venv/bin/activate
    ```
-   If you are a Windows platform, you would activate the virtualenv like this:
-   ```
-   % .venv\Scripts\activate.bat
-   ```
 
 5. Install the required dependencies in the virtual environment. Please make sure you have installed aws cdk following the pre-requisites :
    ```
@@ -228,16 +224,81 @@ Once you run the above command in cloud 9 environment, it will take approximatel
 
 ## Deployment Validation
 
-- To verify a successful deployment of this guidance, open [CloudFormation](https://console.aws.amazon.com/cloudformation/home) console, and verify that the status of the stack named `VirtualStylist` is `CREATE_COMPLETE`.
+- To verify a successful deployment of this guidance, open [CloudFormation](https://console.aws.amazon.com/cloudformation/home) console, and verify that the status of the stack named `VirtualStylistStack` is `CREATE_COMPLETE`.
 - Once the project is deployed, AWS assets are created in your application. You will have a bunch of resources spun up in your AWS account including Lambda functions, S3 bucket, API Gateway, ECR repository and ECS Fargate service.
 
 ## Running the Guidance
 
 - Once cdk stack is deployed and assets are created, you can navigate setup the Amazon Knowledge Base and Amazon Bedrock Agents to leverage custom weather tool.
 
-- "Amazon Bedrock Knowledge base creation" - Navigate to Amazon Bedrock Knowledge base in AWS console. Follow [instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html) to create your own Bedrock Knowledge Base with Opensearch serverless vector DB in your account. Provide a knowledge base name. Further, provide the S3 URI of the object containing the files for the data source that you prepared, that is, select the S3 as data source to your Knowledge base setup that got created due to CDK deployment. You can keep the chunking strategy as "default", select Titan Embeddings model to embed the information and select `Quick create a new vector store` in order to have default option for the vector DB when creating the knowledge base. Note the `data source ID` and `knowledge base ID` once the knowledge base has been created. You will add the `Data source ID` and `knoweldge base ID` as environment variables to AWS lambda Virtual Stylist Text function that resulted from CDK deployment. These 2 values will also be added to the environment variables in `Ingestion Lambda function` responsible to ingesting any new product catalog or customer reviews files uploaded to your designated S3 bucket.
+- **Amazon Bedrock Knowledge base creation** 
+  - Navigate to Amazon Bedrock Knowledge base in AWS console.
+  - Follow [instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html) to create your own Bedrock Knowledge Base with Opensearch serverless vector DB in your account.
+  - Provide a knowledge base name.
+  - Further, provide the S3 URI of the object containing the files for the data source that you prepared, that is, select the S3 as data source to your Knowledge base setup that got created due to CDK deployment.
+    - For this, click `browse s3` and select bucket starting with the name - `virtualstyliststack-virtualstylistappbucketcdk`
+  - Next, you can keep the chunking strategy as "default", select `Titan Text Embeddings v2` model to embed the information and select `Quick create a new vector store` in order to have default option for the vector DB when creating the knowledge base. Note that Knowledge Base can take approximately 10 minutes to be created.
+  - Take note of the `data source ID` and `knowledge base ID` once the knowledge base has been created. You will add the `Data source ID` and `knoweldge base ID` as environment variables to AWS lambda Virtual Stylist Text function that resulted from CDK deployment.
+  - These 2 values will also be added to the environment variables in `Ingestion Lambda function` responsible to ingesting any new product catalog or customer reviews files uploaded to your designated S3 bucket.
 
-- "Amazon Bedrock Agent Creation" - Navigate to Amazon Bedrock Agents in AWS console. Click on `Create new agent` to initiate building a new Bedrock Agent. Follow the instructions [here](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-create.html) to create a new agent. Provide a unique name to the Bedrock agent and set of instructions to the agent as follows : ```You are an AI Virtual Personal Stylist capable of providing optimal set of clothing recommendations and accessories that can be worn by the user based on their profile. You can ask about user’s age, gender or any style related questions to customize the model output and generate recommendations for the end user. If the user asks about recommendations for certain time or month of the year at a particular location, you can ask for specifics and invoke weather api to get the optimal recommendations. The response should be professional and must not include any information outside of the knowledge base context. You must not respond to any other information apart from providing recommendations or asking relevant information regarding the user’s questions, specifically related to virtual stylist.  You can often provide weather conditions in the output to justify the reasoning for providing certain style recommendations based on weather conditions, forecast, temperature. If the user asks anything irrelevant, please respond with “I’m sorry, I’m a Virtual Stylist, I will not be able to help you with this query”.```. When you click nex, in the `Action groups` section, you can choose `Add` to add action groups to your agent. In our case, select the Action group as weather function lambda that was created due to CDK deployment. Additionally, in the `Knowledge bases` section, select the knowledge base that you just created in the previous step. You can skip other steps and click create to test your Amazon Bedrock Agent. Once the agent configuration and building portion is complted, create an alias and version of your agent. In the `Aliases` section, choose Create. Enter a unique Alias name and provide an optional Description. In order to create a new version, choose `Create a new version and to associate it to this alias`. Under Select throughput, select the option to let your agent run model inference at the rates set for your account, select `On-demand (ODT)`. Then,sSelect Create alias. Once created, note the `AgentID` and `Agent Alias`. These 2 values will be added to the environment variables for Virtual Stylist Text Lambda Function.
+- **Amazon Bedrock Agent Creation**
+  - Navigate to Amazon Bedrock Agents in AWS console. Click on `Create Agent` to initiate building a new Bedrock Agent.
+  - Follow the instructions [here](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-create.html) to create a new agent.
+  - Provide a unique name to the Bedrock agent. Agent description is optional, so that can be skipped.
+  - Under `Agent resource role` select `Creat and use a new service role`.
+  - Under `select model` section, select `Anthropic Claude 3 Sonnet` model.
+  - Next, where it mentions `Instructions for the Agent`, add the below set of instructions to the agent:
+   ```
+   You are an AI Virtual Personal Stylist capable of providing optimal set of clothing recommendations and accessories that can be worn by the user based on their profile. You can ask about user’s age, gender or any style related questions to customize the model output and generate recommendations for the end user. If the user asks about recommendations for certain time or month of the year at a particular location, you can ask for specifics and invoke weather api to get the optimal recommendations. The response should be professional and must not include any information outside of the knowledge base context. You must not respond to any other information apart from providing recommendations or asking relevant information regarding the user’s questions, specifically related to virtual stylist.  You can often provide weather conditions in the output to justify the reasoning for providing certain style recommendations based on weather conditions, forecast, temperature. If the user asks anything irrelevant, please respond with “I’m sorry, I’m a Virtual Stylist, I will not be able to help you with this query”.
+   ```
+  - After scrolling further, under the `Action groups` section, you can choose `Add` to add action groups to your agent.
+  - In our case, select the Action group as weather function lambda that was created due to CDK deployment. Select an existing Lambda from the dropdown starting with the name `VirtualStylistStack-WeatherFunction..`, as shown below:
+![actiongroup](assets/images/actiongroup.png)
+  - For the Action group Schema, we will choose `Define via in-line schema editor`. Replace the default schema in the In-line OpenAPI schema editor with the schema provided below:
+  ```
+   openapi: 3.0.0
+   info:
+   title: Weather Agent API
+   version: 1.0.0
+   description: API to get the weather information for a location to recommend clothing for the user.
+   paths:
+   /get-weather-info:
+      get:
+      summary: Get the weather information for a location.
+      description: Retrieve the weather information for a given location.
+      operationId: get-weather-info
+      parameters:
+         - name: location
+            in: query
+            description: The name of the location for which weather information is needed.
+            required: true
+            schema:
+            type: string
+      responses:
+         '200':
+            description: Successful response containing the weather information.
+            content:
+            application/json:
+               schema:
+                  type: object
+                  properties:
+                  temperature:
+                     type: string
+                     description: The current temperature at the location.
+                  condition:
+                     type: string
+                     description: The current weather condition at the location.
+   ```
+  - Enable the Action status for the action group to influence the Agent's response, and click on `Create`. You will land back on Agent Builder page. Click on `Save` button mentioned on the top next to Agent builder.
+  - Next, in the `Knowledge bases` section, select the knowledge base that you just created in the previous step. You can keep rest of the instructions as default. Note that in the instructions for knowledge base, copy paste the following text and click `Add`:
+  ```
+   Knowlegde base contains information comprising of multiple csv files about product catalog, customer reviews for the products that can be recommended as well as future trends in clothing and style.
+  ```
+  - Once added, and you land back on Agent builder page, click on `Save` on top right and next, you can click on `Prepare` to prepare the agent to test the latest changes, on the right pane under `Test Agent`. Now, click `Save and Exit` next to Agent builder. 
+  - Once the agent configuration and building portion is completed, it's time to create an alias and version of your agent.
+  - Click on `Create Alias` under Agent Overview page. In the `Aliases` section, enter a unique Alias name and provide an optional Description. In order to create a new version, choose `Create a new version and to associate it to this alias`.
+  - Under Select throughput, select the option to let your agent run model inference at the rates set for your account, select `On-demand (ODT)`.
+  - Then,Select `Create Alias`. Once created, note the `AgentID` and `Agent Alias`. These 2 values will be added to the environment variables for Virtual Stylist Text Lambda Function.
 
 - By default, the Streamlit frontend application verifies that a user is authenticated with the Amazon Cognito user pool. Amazon API Gateway checks for the API key in every HTTP request to prevent the unauthorized access to the API. However, if you would like to add access control capabilities, you can use Amazon Verified Permissions that allows you to define your permissions model (e.g., RBAC based on Cognito groups membership) with the help of Cedar policies. Please refer to the "Set up with API Gateway and an identity source" in the [service documentation](https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/policy-stores_create.html). You can use this short video for using Amazon Verified Permissions to create this functionality in the app - [Lambda Authorizer setup](https://youtu.be/R7QuHGbKt5U)
 
