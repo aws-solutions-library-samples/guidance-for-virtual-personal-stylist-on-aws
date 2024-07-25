@@ -371,8 +371,6 @@ Apart from the above functions, additional lambda functions are created as part 
 
 - Once this setup is completed, you can click on the `CfnOutput for CloudFront` from your `Cloud9` output when you deployed the stack. After deployment, the output of the deployment in the terminal contains the link for running your application in your browser. Paste the link in your browser to launch the application. Feel free to play with the application. Cheers!
 
-Check solution demo for more details - [Solution Demo](https://youtu.be/EqJ7TmTbbD8)
-
 - **Product Image Search Feature**
   - The third tab will not run as there are no images in the image bucket at this point. Either you can manually upload the images of your own or follow the below steps to upload selective indo Fashion dataset images.
   - **Uploading Images to S3 for product Image Search Feature**
@@ -382,6 +380,43 @@ Check solution demo for more details - [Solution Demo](https://youtu.be/EqJ7TmTb
     - Navigate to your Amazon S3 console and locate the S3 bucket prefixed as `Virtualstyliststack-s3imagebucket...`.
     - Upload the images to s3 bucket. This will trigger an ingesion pipeline which embeds the image using lambda function invoking Amazon Titan multi-modal embeddings model. Once the job is completed, these image vecor embeddings are pushed into Amazon DynamoDb.
     - Now these images are searchable. When the user queries the application for images corresponding to a particular style, cosine similarity is performed in order to search for top 3 images from the database which are displayed to the end user.
+
+## Guidance Demo
+
+Now that all the configuration steps are completed, you should be able to open the Cloudfront URL as detailed above and start playing with the app.
+
+- **Text Generation Feature**
+  - Once you login to the app using your username and password that you created in Cognito above, you will land on the Chat portal similar to what is shown below. Note that the UI frontend may look a bit different, thought the key features/functionality will be the same. 
+   ![ui-1](assets/images/ui-1.png)
+  - You can enter the following query in the chat box and click on `Send`:
+  ```
+  I'm a 30 year old female traveling to Delhi for a friends wedding. What to wear for the function?
+  ```
+   ![ui-2](assets/images/ui-2.png)
+  
+  - This shows the textual recommendation received for the user based on their profile and weather conditions for the location fetched from Amaon Bedrock Agents interacting with OpenWeatherAPI tool.
+
+- **Image Generation Feature**
+  - Now we can copy the text recommendation as shown below and go to Generate Image tab to generate an image recommendation. This invokes Stable Diffusion SDXL1.0 model available on Amazon Bedrock to generate a suitable image from the input text, as shown below in the image.
+  - After clickgin on `Generate Image`, you should be able to see an image recommendation generated pertaining to the input text.
+   ![ui-3](assets/images/ui-3.png)
+
+- **Product Image Search Feature**
+  - Now let's navigate to the Product search tab (3rd tab) within the app UI, and try out the search feature. This feature is able to search and display for top 3 images from the stored data (S3) that resembles the search query entered by the user.
+  - As shown in the image below, the user copies the previously generated textual recommendation from the LLM availble on Amazon Bedrock and pastes in the the text box to get image recommendations from the image catalog.
+  ![ui-4](assets/images/ui-4.png)
+
+  - Note that the images pre-existing in the database are being displayed in the output based on the similarity score. If the images corresponding to the text are not present in the your stored data, the image recommendations might not be very useful to the end user.
+   ![ui-5](assets/images/ui-5.png)
+
+Now you may go back to the chat feature and experiment with out other follow-up actions as shown below. Notice how the Agent asks a follow up question for the user question and provides a clothing recommendation based on information extracted from the query and using RAG approach by extracting custom styling recommendations from the stored data:  
+   ```
+   I'm planning to go to Alaska for a few days. What to wear?
+   ```
+
+![ui-6](assets/images/ui-6.png)
+
+- Check solution demo for more details - [Solution Demo](https://youtu.be/EqJ7TmTbbD8)
 
 ## Next Steps
 
@@ -435,12 +470,23 @@ By exploring these next steps, customers can tailor the Virtual Personal Stylist
 
 1. **Bedrock Agents**:
    - Log in to the AWS Management Console and navigate to the Amazon Bedrock service.
-   - Locate the Bedrock agents used by the Virtual Personal Stylist application, select the agent that you created above and click on delete.
+   - Choose Agents from the left navigation pane.
+   - Locate the Bedrock agents used by the Virtual Personal Stylist application. 
+   - To delete an agent, choose the option button that's next to the agent you want to delete.
+   - A dialog box appears warning you about the consequences of deletion. To confirm that you want to delete the agent, enter delete in the input field and then select Delete.
+   - When deletion is complete, a success banner appears.
 
 2. **Knowledge Base**:
-   - The knowledge base for the Virtual Personal Stylist application may be stored in an Amazon OpenSearch Service domain or another data storage solution.
-   - Log in to the AWS Management Console and navigate to the knowledge base service.
-   - Locate the knowledge base resources, select them and click on delete.
+   - Before the following steps, make sure to delete the knowledge base from any agents that it's associated with. To do this, carry out the following steps:
+     - From the left navigation pane, select Agents.
+     - Choose the Name of the agent that you want to delete the knowledge base from.
+     - A red banner appears to warn you to delete the reference to the knowledge base, which no longer exists, from the agent.
+     - Select the radio button next to the knowledge base that you want to remove. Select More and then choose Delete.
+
+   - Sign in to the AWS Management Console using an IAM role with Amazon Bedrock permissions, and open the [Amazon Bedrock console](https://console.aws.amazon.com/bedrock/).
+   - From the left navigation pane, select Knowledge bases.
+   - Choose a knowledge base or select the radio button next to a knowledge base. Then choose Delete.
+   - Review the warnings for deleting a knowledge base. If you accept these conditions, enter delete in the input box and select Delete to confirm.
 
 3. **S3 Bucket Content**:
    - The Virtual Personal Stylist application may use an S3 bucket to store generated images or other unstructured data.
@@ -449,23 +495,20 @@ By exploring these next steps, customers can tailor the Virtual Personal Stylist
    - Locate the S3 bucket used by the application and delete all the objects within it.
    - Once the bucket is empty, you can delete the bucket itself.
 
-4. **Secrets Manager Secrets**:
-   - The Virtual Personal Stylist application may use AWS Secrets Manager to store sensitive credentials or other secrets.
-   - If the secrets were not managed by the CDK app, you will need to delete them manually.
-   - Log in to the AWS Management Console and navigate to the Secrets Manager service.
-   - Locate the secrets used by the application and delete them one by one.
-
-5. **Cognito User Pool**:
+4. **Cognito User Pool**:
    - If the Amazon Cognito user pool was not managed by the CDK app, you will need to delete it manually.
-   - Log in to the AWS Management Console and navigate to the Cognito service.
-   - Locate the user pool used by the Virtual Personal Stylist application and delete it.
+   - Go to the Amazon Cognito [console](https://console.aws.amazon.com/cognito/home). From the navigation, choose User Pools.
+   - Select the user pool [code] swb-userpool-<stage>-<awsRegionShortName>.
+   - Choose `Delete`.
+   - Enter the name of the user pool to confirm.
 
-6. **AWS WAF Configuration**:
-   - If the AWS WAF configuration was not managed by the CDK app, you will need to delete it manually.
-   - Log in to the AWS Management Console and navigate to the AWS WAF service.
-   - Locate the WAF resources used by the application and delete them one by one.
-
-Remember to double-check that all the resources have been successfully deleted to avoid any unnecessary charges or security concerns.
+5. **AWS WAF Configuration**:
+   - Sign in to the AWS Management Console and open the [AWS WAF console](https://console.aws.amazon.com/wafv2/).
+   - In the navigation pane, choose Web ACLs.
+   - Select the name of the web ACL that you want to delete. The console takes you to the web ACL's description, where you can edit it.
+   - On the Associated AWS resources tab, for each associated resource, select the radio button next to the resource name and then choose Disassociate. This disassociates the web ACL from your AWS resources.
+   - In the navigation pane, choose Web ACLs.
+   - Select the radio button next to the web ACL that you are deleting, and then choose Delete.
 
 ## FAQ, known issues, additional considerations, and limitations
 
