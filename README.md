@@ -300,13 +300,88 @@ Once you run the above command in cloud 9 environment, it will take approximatel
   - Under Select throughput, select the option to let your agent run model inference at the rates set for your account, select `On-demand (ODT)`.
   - Then,Select `Create Alias`. Once created, note the `AgentID` and `Agent Alias`. These 2 values will be added to the environment variables for Virtual Stylist Text Lambda Function.
 
-- By default, the Streamlit frontend application verifies that a user is authenticated with the Amazon Cognito user pool. Amazon API Gateway checks for the API key in every HTTP request to prevent the unauthorized access to the API. However, if you would like to add access control capabilities, you can use Amazon Verified Permissions that allows you to define your permissions model (e.g., RBAC based on Cognito groups membership) with the help of Cedar policies. Please refer to the "Set up with API Gateway and an identity source" in the [service documentation](https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/policy-stores_create.html). You can use this short video for using Amazon Verified Permissions to create this functionality in the app - [Lambda Authorizer setup](https://youtu.be/R7QuHGbKt5U)
+- **Set the Environment Variables for Lambda Function**
+  - Navigate to AWS console and search for lambda in the search bar. Search for lambda function with the name starting with `VirtualstylistStack-TextFunction..`. The text lambda function is created which is invoked when user desires a textual recommendation from the virtual stylist application. Ensure you input the knowledge base ID, model ID, Agent Alias ID, and Agent Alias in the lambda code within environment variables.
+  - Click on `Configuration` and then, navigate to `Environment variables`.
+    - Click on the "Edit" button to modify the environment variables.
+    - For the "Key" field, you should see some values corresponding to knowledge base ID and other environment variables.
+    - For the "Value" field, enter the actual values you obtained from the Amazon Bedrock Agents and Amazon Bedrock for Knowledge Bases section. Click `Save` to apply the changes as shown below.
+![env_variables](assets/images/env_variables.png)
 
-- Additional details are provided in our AWS Workshop for Virtual Personal Stylist.
+- **Weather API Agent**
+  - The cdk stack additionally deploys weather api agent lambda function. This weather agent lambda function integrates with Amazon Bedrock Agent you created in the earlier steps in order to fetch the accurate weather conditions based on the user's input location within the query.
+  - Note that the lambda function created for weather agent needs to have openweather map API key to fetch the accurate weather conditions pertaining to a given location. Follow the below instructions in order to create your weather api key:
+    - Navigate to [openweathermap](https://home.openweathermap.org/) and register an account on the website.
+    - Once you have created the account, navigate to [API keys web-page](https://home.openweathermap.org/api_keys) and click on generate your weather api key. An api key with the name you type will be created as shown below.
+![weatherapi](assets/images/weather_api.png)
+  - Once that has been created, you can use the api key in your Action group lambda function for weather api agent as part of environment variable as shown in the following section.
 
-- Once this setup is completed, you can click on the `CfnOutput for CloudFront` which contains the link for running your application in your browser. Paste the link in your browser to launch the application. Feel free to play with the application. Cheers!
+- **Action Group Lambda Function for Weather API Agent**
+  - The Virtual Personal Stylist application uses a Lambda function that is associated with an `Action Group` in the Bedrock Agent. This Lambda function is triggered when the Bedrock Agent is invoked from the text generation lambda function called via front-end of the application.
+  - You have already associated this lambda function (`VirtualStylistStack-WeatherFunction..`) to your Amazon Bedrock Agent.
+  - Simply navigate to the environment variable of the lambda function as shown earlier and provide `YOUR_OPENWEATHERMAP_API_KEY` you fetched in the previous section. This API key is required to authenticate and make requests to the OpenWeatherMap API.
+  - Additionally, we are using requests library in this lambda function to trigger OpenWeatherMap API. By default, requests library does not exist in the existing dependency packages. Follow the next section to create your own lambda layer and attach it to this lambda function.
+
+- **Instructions for creating lambda layer**
+  - A Lambda Layer is a mechanism in AWS Lambda that allows you to package and share common code, libraries, or other dependencies that can be used by multiple Lambda functions. This helps to optimize the size of your Lambda functions, as the layer can be shared across functions, reducing the overall deployment package size.
+  - In the case of the weather agent Lambda function, the "layers.zip" file should contains the "requests" library, which is required for making HTTP requests to the OpenWeatherMap API. Given below are the instructions to create Lambda Layer for calling requests library in the weather agent lambda function. In order to create the lambda layer, follow the following instructions in your local system:
+    - Create a folder through your local terminal (iterm/terminal) using the following command : `mkdir layer`
+    - Navigate into the folder : `cd layer`
+    - Create a new directory : `mkdir python`
+    - Run this command within the folder : `pip install -t python requests`
+    - Now, zip the contents of of file within the folder and name is layers.zip using : `zip -r12 layers.zip python`
+  - Now that you have created the layers.zip file with r12 (aka runtime python 3.12 version), you should be able to upload this to your lambda function for leveraging in the stylist application.
+
+- **Adding a layer to lambda function**
+  - In order to add a layer to a function (console), following the below steps:
+    - Open the Functions page  of the Lambda console.
+    - Choose the function to configure.
+    - Under `Layers`, choose `Add a layer` button.
+    - Under `Choose a layer`, choose a layer source:
+      - For the AWS layers or Custom layers layer sources, choose a layer from the pull-down menu.
+      - Under `Version`, choose a layer version from the pull-down menu.
+      - For the `Specify an ARN` layer source, enter an `ARN` in the text box and choose Verify. Then, choose `Add`.
+    - Once the layer is added, you can save the function configuration.
+
+The use of a Lambda function, environment variables, and custom libraries (as Lambda Layers) demonstrates the flexibility and extensibility of the Virtual Personal Stylist application, allowing for the integration of various third-party services and functionalities as needed. In case you want to create your own lambda layer, follow the next section.
+
+Apart from the above functions, additional lambda functions are created as part of CDK stack deployment but no setup or configuration changes is required for running the application. The user can now proceed with the front-end deployment instructions.
+
+- **Front-End Configuration**
+  - By default, the Streamlit frontend application verifies that a user is authenticated with the Amazon Cognito user pool. Amazon API Gateway checks for the API key in every HTTP request to prevent the unauthorized access to the API. However, if you would like to add access control capabilities, you can use Amazon Verified Permissions that allows you to define your permissions model (e.g., RBAC based on Cognito groups membership) with the help of Cedar policies. Please refer to the "Set up with API Gateway and an identity source" in the [service documentation](https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/policy-stores_create.html). You can use this short video for using Amazon Verified Permissions to create this functionality in the app - [Lambda Authorizer setup](https://youtu.be/R7QuHGbKt5U)
+
+  - Now that the application has been deployed, you can login via the browser using Cloudfront URL or load balancer DNS URL. In case you face any issues: n
+    - Navigate to `CloudFront` from AWS console using search bar, click on `Distributions` and select the `CloudFront Distributions` created for you via CDK stack deployment.
+    - Once you are within the `CloudFront Distrubution`, click on `Origins`. Under `Origins`, select the origin as shown below and click on `Edit`.
+   ![Cloudfront](assets/images/Cloudfront.png)
+    - Under `Settings`, select protocol as `HTTP only` with port `80` as the origin's HTTP port (as shown below). Click on `Save Changes`.
+   ![Cloudfront-2](assets/images/Cloudfront-2.png)
+    - Now your cloudfront is configured properly to be launched via web browser.
+
+- After opening the app in your browser, you will be presented with login page. In order to login, you need to create a user in Amazon Cognito. With a user pool, your users can sign in to your web or mobile app through Amazon Cognito.
+
+- **Create a new user in Amazon Cognito**
+  - Go to the [Amazon Cognito console](https://console.aws.amazon.com/cognito/home) . If prompted, enter your AWS credentials.
+  - Navigate to user pools on the left side of the panel. You should see a user pool created via CDK stack.
+  - Click on the pre-created user pool. You will land on the image shown below:
+   ![Cognito](assets/images/Cognito.png)
+  - As shown in the image, you can click on `Users` tab below `Getting Started` section and click on `create user` to create your user profile.
+  - Now, create a new user by providing username, valid email address and temporary password to login to the application.
+  - After this setup, you should be able to login and launch your virtual stylist application!
+
+- Once this setup is completed, you can click on the `CfnOutput for CloudFront` from your `Cloud9` output when you deployed the stack. After deployment, the output of the deployment in the terminal contains the link for running your application in your browser. Paste the link in your browser to launch the application. Feel free to play with the application. Cheers!
 
 Check solution demo for more details - [Solution Demo](https://youtu.be/EqJ7TmTbbD8)
+
+- **Product Image Search Feature**
+  - The third tab will not run as there are no images in the image bucket at this point. Either you can manually upload the images of your own or follow the below steps to upload selective indo Fashion dataset images.
+  - **Uploading Images to S3 for product Image Search Feature**
+    - In the application, you will notice a third tab corresponding to image search feature.
+    - You can navigate to Kaggle and find the [Indo Fashion dataset](https://www.kaggle.com/datasets/validmodel/indo-fashion-dataset)  as an example. Download the Train_data.json and a subset of jpeg images (say 200) under training images.
+    - Once downloaded, store it in the local drive. Users can upload the json file and images to S3 bucket that was created as part of cdk stack deployment.
+    - Navigate to your Amazon S3 console and locate the S3 bucket prefixed as `Virtualstyliststack-s3imagebucket...`.
+    - Upload the images to s3 bucket. This will trigger an ingesion pipeline which embeds the image using lambda function invoking Amazon Titan multi-modal embeddings model. Once the job is completed, these image vecor embeddings are pushed into Amazon DynamoDb.
+    - Now these images are searchable. When the user queries the application for images corresponding to a particular style, cosine similarity is performed in order to search for top 3 images from the database which are displayed to the end user.
 
 ## Next Steps
 
@@ -349,7 +424,7 @@ By exploring these next steps, customers can tailor the Virtual Personal Stylist
 ### Cleanup of CDK-Deployed Resources
 
 1. **Terminate the CDK app**:
-   - Navigate to the CDK app directory in your terminal.
+   - Navigate to the CDK app directory in your Cloud9 terminal. In your case, it should be the same directory from where you ran the `cdk deploy` command.
    - Run the following command to destroy the CDK stack and all the resources it manages:```cdk destroy --all```
    - This will remove all the AWS resources created by the CDK app, including Lambda functions, DynamoDB tables, S3 buckets, and more.
 
@@ -360,12 +435,12 @@ By exploring these next steps, customers can tailor the Virtual Personal Stylist
 
 1. **Bedrock Agents**:
    - Log in to the AWS Management Console and navigate to the Amazon Bedrock service.
-   - Locate the Bedrock agents used by the Virtual Personal Stylist application and delete them manually.
+   - Locate the Bedrock agents used by the Virtual Personal Stylist application, select the agent that you created above and click on delete.
 
 2. **Knowledge Base**:
    - The knowledge base for the Virtual Personal Stylist application may be stored in an Amazon OpenSearch Service domain or another data storage solution.
-   - Log in to the AWS Management Console and navigate to the appropriate service.
-   - Locate the knowledge base resources and delete them manually.
+   - Log in to the AWS Management Console and navigate to the knowledge base service.
+   - Locate the knowledge base resources, select them and click on delete.
 
 3. **S3 Bucket Content**:
    - The Virtual Personal Stylist application may use an S3 bucket to store generated images or other unstructured data.
