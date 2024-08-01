@@ -225,7 +225,7 @@ Once you run the above command in cloud 9 environment, it will take approximatel
 ## Deployment Validation
 
 - To verify a successful deployment of this guidance, open [CloudFormation](https://console.aws.amazon.com/cloudformation/home) console, and verify that the status of the stack named `VirtualStylistStack` is `CREATE_COMPLETE`.
-- Once the project is deployed, AWS assets are created in your application. You will have a bunch of resources spun up in your AWS account including Lambda functions, S3 bucket, API Gateway, ECR repository and ECS Fargate service.
+- Once the project is deployed, AWS assets are created in your application. You can navigate to AWS CloudFormation console and click on aforementioned stack. Now you can click on `resources` tab which shows all the resources created by the stack.
 
 ## Running the Guidance
 
@@ -258,36 +258,36 @@ Once you run the above command in cloud 9 environment, it will take approximatel
   ```
    openapi: 3.0.0
    info:
-   title: Weather Agent API
-   version: 1.0.0
-   description: API to get the weather information for a location to recommend clothing for the user.
+    title: Weather Agent API
+    version: 1.0.0
+    description: API to get the weather information for a location to recommend clothing for the user.
    paths:
-   /get-weather-info:
+    /get-weather-info:
       get:
-      summary: Get the weather information for a location.
-      description: Retrieve the weather information for a given location.
-      operationId: get-weather-info
-      parameters:
-         - name: location
+        summary: Get the weather information for a location.
+        description: Retrieve the weather information for a given location.
+        operationId: get-weather-info
+        parameters:
+          - name: location
             in: query
             description: The name of the location for which weather information is needed.
             required: true
             schema:
-            type: string
-      responses:
-         '200':
+              type: string
+        responses:
+          '200':
             description: Successful response containing the weather information.
             content:
-            application/json:
-               schema:
+              application/json:
+                schema:
                   type: object
                   properties:
-                  temperature:
-                     type: string
-                     description: The current temperature at the location.
-                  condition:
-                     type: string
-                     description: The current weather condition at the location.
+                    temperature:
+                      type: string
+                      description: The current temperature at the location.
+                    condition:
+                      type: string
+                      description: The current weather condition at the location.
    ```
   - Enable the Action status for the action group to influence the Agent's response, and click on `Create`. You will land back on Agent Builder page. Click on `Save` button mentioned on the top next to Agent builder.
   - Next, in the `Knowledge bases` section, select the knowledge base that you just created in the previous step. You can keep rest of the instructions as default. Note that in the instructions for knowledge base, copy paste the following text and click `Add`:
@@ -323,25 +323,37 @@ Once you run the above command in cloud 9 environment, it will take approximatel
   - Additionally, we are using requests library in this lambda function to trigger OpenWeatherMap API. By default, requests library does not exist in the existing dependency packages. Follow the next section to create your own lambda layer and attach it to this lambda function.
 
 - **Instructions for creating lambda layer**
-  - A Lambda Layer is a mechanism in AWS Lambda that allows you to package and share common code, libraries, or other dependencies that can be used by multiple Lambda functions. This helps to optimize the size of your Lambda functions, as the layer can be shared across functions, reducing the overall deployment package size.
+  - A Lambda Layer is a mechanism in AWS Lambda that allows you to package and share common code, libraries, or other dependencies that can be used by multiple Lambda functions. This helps to optimize the size of your Lambda functions, as the layer can be shared across functions, reducing the overall deployment package size. Check out more details on lambda layers [here](https://docs.aws.amazon.com/lambda/latest/dg/chapter-layers.html).
   - In the case of the weather agent Lambda function, the "layers.zip" file should contains the "requests" library, which is required for making HTTP requests to the OpenWeatherMap API. Given below are the instructions to create Lambda Layer for calling requests library in the weather agent lambda function. In order to create the lambda layer, follow the following instructions in your local system:
-    - Create a folder through your local terminal (iterm/terminal) using the following command : `mkdir layer`
-    - Navigate into the folder : `cd layer`
-    - Create a new directory : `mkdir python`
-    - Run this command within the folder : `pip install -t python requests`
+    - Create a folder through your local terminal (iterm/terminal) using the following command : 
+    ```
+    mkdir layer
+    ```
+    - Navigate into the folder:
+    ```
+    cd layer
+    ```
+    - Create a new directory:
+    ```
+    mkdir python
+    ```
+    - Run this command within the python folder : 
+    ```
+    pip install -t python requests
+    ```
     - Now, zip the contents of of file within the folder and name is layers.zip using : `zip -r12 layers.zip python`
   - Now that you have created the layers.zip file with r12 (aka runtime python 3.12 version), you should be able to upload this to your lambda function for leveraging in the stylist application.
 
-- **Adding a layer to lambda function**
+- **Attaching a layer to lambda function**
   - In order to add a layer to a function (console), following the below steps:
     - Open the Functions page  of the Lambda console.
-    - Choose the function to configure.
+    - Choose the Weather function to configure by searching for weather within the lambda console. You should see something like `VirtualstylistStack-WeatherFunction...` pop up in your list of lambda function. Select this lambda function and scroll down to `Layers` section.
     - Under `Layers`, choose `Add a layer` button.
     - Under `Choose a layer`, choose a layer source:
       - For the AWS layers or Custom layers layer sources, choose a layer from the pull-down menu.
       - Under `Version`, choose a layer version from the pull-down menu.
       - For the `Specify an ARN` layer source, enter an `ARN` in the text box and choose Verify. Then, choose `Add`.
-    - Once the layer is added, you can save the function configuration.
+    - Once the layer is attached, you can save the lambda function configuration.
 
 The use of a Lambda function, environment variables, and custom libraries (as Lambda Layers) demonstrates the flexibility and extensibility of the Virtual Personal Stylist application, allowing for the integration of various third-party services and functionalities as needed. In case you want to create your own lambda layer, follow the next section.
 
@@ -356,7 +368,7 @@ Apart from the above functions, additional lambda functions are created as part 
    ![Cloudfront](assets/images/Cloudfront.png)
     - Under `Settings`, select protocol as `HTTP only` with port `80` as the origin's HTTP port (as shown below). Click on `Save Changes`.
    ![Cloudfront-2](assets/images/Cloudfront-2.png)
-    - Now your cloudfront is configured properly to be launched via web browser.
+    - Now your cloudfront has been properly configured.
 
 - After opening the app in your browser, you will be presented with login page. In order to login, you need to create a user in Amazon Cognito. With a user pool, your users can sign in to your web or mobile app through Amazon Cognito.
 
@@ -364,12 +376,12 @@ Apart from the above functions, additional lambda functions are created as part 
   - Go to the [Amazon Cognito console](https://console.aws.amazon.com/cognito/home) . If prompted, enter your AWS credentials.
   - Navigate to user pools on the left side of the panel. You should see a user pool created via CDK stack.
   - Click on the pre-created user pool. You will land on the image shown below:
-   ![Cognito](assets/images/Cognito.png)
+   ![Cognito](assets/images/cognito.png)
   - As shown in the image, you can click on `Users` tab below `Getting Started` section and click on `create user` to create your user profile.
   - Now, create a new user by providing username, valid email address and temporary password to login to the application.
   - After this setup, you should be able to login and launch your virtual stylist application!
 
-- Once this setup is completed, you can click on the `CfnOutput for CloudFront` from your `Cloud9` output when you deployed the stack. After deployment, the output of the deployment in the terminal contains the link for running your application in your browser. Paste the link in your browser to launch the application. Feel free to play with the application. Cheers!
+- Once this setup is completed, you can select the `VirtualstylistStack.CloudFrontURL` value from your `Cloud9` output when you deployed the stack. After deployment, the output of the deployment in the terminal contains the link for running your application in your browser. Paste the link in your browser to launch the application. Feel free to play with the application. Cheers!
 
 - **Product Image Search Feature**
   - The third tab will not run as there are no images in the image bucket at this point. Either you can manually upload the images of your own or follow the below steps to upload selective indo Fashion dataset images.
