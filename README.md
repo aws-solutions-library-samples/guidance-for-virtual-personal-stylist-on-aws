@@ -327,7 +327,7 @@ Once you run the above command in cloud 9 environment, it will take approximatel
 - **Instructions for creating lambda layer**
   - A Lambda Layer is a mechanism in AWS Lambda that allows you to package and share common code, libraries, or other dependencies that can be used by multiple Lambda functions. This helps to optimize the size of your Lambda functions, as the layer can be shared across functions, reducing the overall deployment package size. Check out more details on lambda layers [here](https://docs.aws.amazon.com/lambda/latest/dg/chapter-layers.html).
   - In the case of the weather agent Lambda function, the "layers.zip" file should contains the "requests" library, which is required for making HTTP requests to the OpenWeatherMap API. Given below are the instructions to create Lambda Layer for calling requests library in the weather agent lambda function. In order to create the lambda layer, follow the following instructions in your local system:
-    - Create a folder through your local terminal (iterm/terminal) using the following command : 
+    - Create a folder through your local terminal (iterm/terminal) using the following command :
     ```
     mkdir layer
     ```
@@ -344,7 +344,15 @@ Once you run the above command in cloud 9 environment, it will take approximatel
     pip install -t python requests
     ```
     - Now, zip the contents of of file within the folder and name is layers.zip using : `zip -r12 layers.zip python`
-  - Now that you have created the layers.zip file with r12 (aka runtime python 3.12 version), you should be able to upload this to your lambda function for leveraging in the stylist application.
+  - Now that you have created the layers.zip file with r12 (aka runtime python 3.12 version), you should be able to upload this zip file and attach as a layer to your lambda function for leveraging in the stylist application.
+  - **Custom Layer upload steps**:
+    - Open the [Layers page](https://console.aws.amazon.com/lambda/home#/layers) of the Lambda console.
+    - Choose Create layer.
+    - Under Layer configuration, for Name, enter a unique name for your layer.
+    - (Optional) For Description, enter a description for your layer.
+    - Layer upload: To upload a .zip file from your computer that you just created, choose Upload a .zip file. Then, choose `Upload` to select your local `.zip` file.
+    - Select the `Compatible runtimes` as `python3.12`, keeping other options unchanged.
+    - Click on `Create` to create this layer.
 
 - **Attaching a layer to lambda function**
   - In order to add a layer to a function (console), following the below steps:
