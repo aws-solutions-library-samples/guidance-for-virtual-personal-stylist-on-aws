@@ -57,8 +57,6 @@ pool_id = cognito_secrets['pool_id']
 app_client_id = cognito_secrets['app_client_id']
 app_client_secret = cognito_secrets['app_client_secret']
 
-access_token = st.session_state['auth_access_token']
-
 # Initialise CognitoAuthenticator
 authenticator = CognitoAuthenticator(
         pool_id=pool_id,

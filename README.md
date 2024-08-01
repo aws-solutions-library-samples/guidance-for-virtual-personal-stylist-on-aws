@@ -231,7 +231,7 @@ Once you run the above command in cloud 9 environment, it will take approximatel
 
 - Once cdk stack is deployed and assets are created, you can navigate setup the Amazon Knowledge Base and Amazon Bedrock Agents to leverage custom weather tool.
 
-- **Amazon Bedrock Knowledge base creation** 
+- **Amazon Bedrock Knowledge base creation**
   - Navigate to Amazon Bedrock Knowledge base in AWS console.
   - Follow [instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html) to create your own Bedrock Knowledge Base with Opensearch serverless vector DB in your account.
   - Provide a knowledge base name.
@@ -245,14 +245,15 @@ Once you run the above command in cloud 9 environment, it will take approximatel
   - Navigate to Amazon Bedrock Agents in AWS console. Click on `Create Agent` to initiate building a new Bedrock Agent.
   - Follow the instructions [here](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-create.html) to create a new agent.
   - Provide a unique name to the Bedrock agent. Agent description is optional, so that can be skipped.
-  - Under `Agent resource role` select `Creat and use a new service role`.
+  - Under `Agent resource role` select `Create and use a new service role`.
   - Under `select model` section, select `Anthropic Claude 3 Sonnet` model.
   - Next, where it mentions `Instructions for the Agent`, add the below set of instructions to the agent:
    ```
    You are an AI Virtual Personal Stylist capable of providing optimal set of clothing recommendations and accessories that can be worn by the user based on their profile. You can ask about user’s age, gender or any style related questions to customize the model output and generate recommendations for the end user. If the user asks about recommendations for certain time or month of the year at a particular location, you can ask for specifics and invoke weather api to get the optimal recommendations. The response should be professional and must not include any information outside of the knowledge base context. You must not respond to any other information apart from providing recommendations or asking relevant information regarding the user’s questions, specifically related to virtual stylist.  You can often provide weather conditions in the output to justify the reasoning for providing certain style recommendations based on weather conditions, forecast, temperature. If the user asks anything irrelevant, please respond with “I’m sorry, I’m a Virtual Stylist, I will not be able to help you with this query”.
    ```
   - After scrolling further, under the `Action groups` section, you can choose `Add` to add action groups to your agent.
-  - In our case, select the Action group as weather function lambda that was created due to CDK deployment. Select an existing Lambda from the dropdown starting with the name `VirtualStylistStack-WeatherFunction..`, as shown below:
+  - Under `Action group type`, select `Define with API schemas`.
+  - Then, select the `Action group invocation` option as weather function lambda that was created due to CDK deployment. Select an existing Lambda from the dropdown starting with the name `VirtualStylistStack-WeatherFunction..`, as shown below:
 ![actiongroup](assets/images/actiongroup.png)
   - For the Action group Schema, we will choose `Define via in-line schema editor`. Replace the default schema in the In-line OpenAPI schema editor with the schema provided below:
   ```
@@ -294,7 +295,7 @@ Once you run the above command in cloud 9 environment, it will take approximatel
   ```
    Knowlegde base contains information comprising of multiple csv files about product catalog, customer reviews for the products that can be recommended as well as future trends in clothing and style.
   ```
-  - Once added, and you land back on Agent builder page, click on `Save` on top right and next, you can click on `Prepare` to prepare the agent to test the latest changes, on the right pane under `Test Agent`. Now, click `Save and Exit` next to Agent builder. 
+  - Once added, and you land back on Agent builder page, click on `Save` on top right and next, you can click on `Prepare` to prepare the agent to test the latest changes, on the right pane under `Test Agent`. Now, click `Save and Exit` next to Agent builder. Please note that when creating the agent, after inputting the instructions, make sure you save the configuration and double check the model and instructions privided to the agent as this might be reset within Bedrock console.
   - Once the agent configuration and building portion is completed, it's time to create an alias and version of your agent.
   - Click on `Create Alias` under Agent Overview page. In the `Aliases` section, enter a unique Alias name and provide an optional Description. In order to create a new version, choose `Create a new version and to associate it to this alias`.
   - Under Select throughput, select the option to let your agent run model inference at the rates set for your account, select `On-demand (ODT)`.
@@ -307,6 +308,7 @@ Once you run the above command in cloud 9 environment, it will take approximatel
     - For the "Key" field, you should see some values corresponding to knowledge base ID and other environment variables.
     - For the "Value" field, enter the actual values you obtained from the Amazon Bedrock Agents and Amazon Bedrock for Knowledge Bases section. Click `Save` to apply the changes as shown below.
 ![env_variables](assets/images/env_variables.png)
+  - In a similar way, navigate to Ingestion lambda function named - `VirtualstylistStack-IngestionFunction...` and edit the following environment variables : `DATASOURCEID` and `KNOWLEDGEBASEID` that you captured previously from the section :  `Amazon Bedrock Knowledge base creation`.
 
 - **Weather API Agent**
   - The cdk stack additionally deploys weather api agent lambda function. This weather agent lambda function integrates with Amazon Bedrock Agent you created in the earlier steps in order to fetch the accurate weather conditions based on the user's input location within the query.
@@ -387,10 +389,12 @@ Apart from the above functions, additional lambda functions are created as part 
   - The third tab will not run as there are no images in the image bucket at this point. Either you can manually upload the images of your own or follow the below steps to upload selective indo Fashion dataset images.
   - **Uploading Images to S3 for product Image Search Feature**
     - In the application, you will notice a third tab corresponding to image search feature.
-    - You can navigate to Kaggle and find the [Indo Fashion dataset](https://www.kaggle.com/datasets/validmodel/indo-fashion-dataset)  as an example. Download the Train_data.json and a subset of jpeg images (say 200) under training images.
-    - Once downloaded, store it in the local drive. Users can upload the json file and images to S3 bucket that was created as part of cdk stack deployment.
+    - You can navigate to Kaggle and find the [Indo Fashion dataset](https://www.kaggle.com/datasets/validmodel/indo-fashion-dataset)  as an example. Download the Train_data.json and jpeg images under training images.
+    - Once downloaded, store it in the local drive. Users can upload the json file and a subset of training images (say 100-200) to your S3 bucket that was created as part of cdk stack deployment as illustrated in the next step.
     - Navigate to your Amazon S3 console and locate the S3 bucket prefixed as `Virtualstyliststack-s3imagebucket...`.
-    - Upload the images to s3 bucket. This will trigger an ingesion pipeline which embeds the image using lambda function invoking Amazon Titan multi-modal embeddings model. Once the job is completed, these image vecor embeddings are pushed into Amazon DynamoDb.
+    - Upload the images to s3 bucket. This will trigger an ingesion pipeline which embeds the image using lambda function invoking Amazon Titan multi-modal embeddings model.
+    - Depending on the number of images uploaded, the user may have to wait for 10 mins before all the embeddings are created and stored in dynamodb. You can navigate to DynamoDB and find the table named - `VirtualstylistStack-EmbeddingsTable...` that was created via CDK stack. You can click on the table and click on `Get live item count` to check the item count summary. It should be the same number as the number of images that have been uploaded to your S3 bucket. Hence, once the job is completed, all these image vector embeddings are pushed and should be reflected in Amazon DynamoDb as shown below.
+    ![dynamodb](assets/images/dynamodb.png)
     - Now these images are searchable. When the user queries the application for images corresponding to a particular style, cosine similarity is performed in order to search for top 3 images from the database which are displayed to the end user.
 
 ## Guidance Demo
@@ -398,7 +402,7 @@ Apart from the above functions, additional lambda functions are created as part 
 Now that all the configuration steps are completed, you should be able to open the Cloudfront URL as detailed above and start playing with the app.
 
 - **Text Generation Feature**
-  - Once you login to the app using your username and password that you created in Cognito above, you will land on the Chat portal similar to what is shown below. Note that the UI frontend may look a bit different, thought the key features/functionality will be the same. 
+  - Once you login to the app using your username and password that you created in Cognito above, you will land on the Chat portal similar to what is shown below. Note that the UI frontend may look a bit different, though the key features/functionality will be the same.
    ![ui-1](assets/images/ui-1.png)
   - You can enter the following query in the chat box and click on `Send`:
   ```
@@ -410,7 +414,7 @@ Now that all the configuration steps are completed, you should be able to open t
 
 - **Image Generation Feature**
   - Now we can copy the text recommendation as shown below and go to Generate Image tab to generate an image recommendation. This invokes Stable Diffusion SDXL1.0 model available on Amazon Bedrock to generate a suitable image from the input text, as shown below in the image.
-  - After clickgin on `Generate Image`, you should be able to see an image recommendation generated pertaining to the input text.
+  - After clicking on `Generate Image`, you should be able to see an image recommendation generated pertaining to the input text.
    ![ui-3](assets/images/ui-3.png)
 
 - **Product Image Search Feature**
@@ -421,7 +425,7 @@ Now that all the configuration steps are completed, you should be able to open t
   - Note that the images pre-existing in the database are being displayed in the output based on the similarity score. If the images corresponding to the text are not present in the your stored data, the image recommendations might not be very useful to the end user.
    ![ui-5](assets/images/ui-5.png)
 
-Now you may go back to the chat feature and experiment with out other follow-up actions as shown below. Notice how the Agent asks a follow up question for the user question and provides a clothing recommendation based on information extracted from the query and using RAG approach by extracting custom styling recommendations from the stored data:  
+Now you may go back to the chat feature and experiment with our other activities as shown below. Notice that the Agent may ask a follow up question for the user question and provides a clothing recommendation based on information extracted from the query and using RAG approach by extracting custom styling recommendations from the stored data:  
    ```
    I'm planning to go to Alaska for a few days. What to wear?
    ```
@@ -510,7 +514,7 @@ By exploring these next steps, customers can tailor the Virtual Personal Stylist
 4. **Cognito User Pool**:
    - If the Amazon Cognito user pool was not managed by the CDK app, you will need to delete it manually.
    - Go to the Amazon Cognito [console](https://console.aws.amazon.com/cognito/home). From the navigation, choose User Pools.
-   - Select the user pool [code] swb-userpool-<stage>-<awsRegionShortName>.
+   - Select the user pool title as `VirtualStylistUserPool..` in the console.
    - Choose `Delete`.
    - Enter the name of the user pool to confirm.
 
@@ -522,9 +526,17 @@ By exploring these next steps, customers can tailor the Virtual Personal Stylist
    - In the navigation pane, choose Web ACLs.
    - Select the radio button next to the web ACL that you are deleting, and then choose Delete.
 
+6. **Cloud9 Environment**:
+   - Sign in to AWS Management console and open [Cloud9 Console](https://console.aws.amazon.com/cloud9/)
+   - In the top navigation bar, choose the AWS Region where the environment is located. In the list of environments, for the environment that you want to delete, do one of the following actions.
+     - Choose the title of the card for the environment. Then, choose `Delete` on the next page.
+     - Select the card for the environment, and then choose the `Delete` button.
+     - In the Delete dialog box, type `Delete`, and then choose `Delete`.
+
+
 ## FAQ, known issues, additional considerations, and limitations
 
-- Please note that in this guidance package, Streamlit application was deployed in ECS fargate and exposed to the user via Cloudfront distribution. Alternatively, another version using `AWS Amplify` with similar security practices can also be deployed and hosted for the end user. 
+- Please note that in this guidance package, Streamlit application was deployed in ECS fargate and exposed to the user via Cloudfront distribution. Alternatively, another version using `AWS Amplify` with similar security practices can also be deployed and hosted for the end user.
 - Additionally, for this PoC guidance package, DynamoDB was used to store the small number of image embeddings which were vectorized using Amazon Titan embeddings model. When moving into production environment, simply replace Amazon DynamoDB with enterprise grade vector DB applicable to your use case, that is, Opensearch Serverless may be used as an alternative for production workloads.
 
 ## Revisions
