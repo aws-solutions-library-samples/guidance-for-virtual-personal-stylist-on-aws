@@ -1,3 +1,5 @@
+# SO9506 - Virtual Personal Stylist Guidance Stack deployed using AWS CDK 
+
 import os
 import aws_cdk
 from aws_cdk import (
