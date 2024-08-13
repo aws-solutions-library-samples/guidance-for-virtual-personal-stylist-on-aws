@@ -550,13 +550,6 @@ class VirtualstylistStack(Stack):
                 origin_request_policy=cloudfront.OriginRequestPolicy.ALL_VIEWER,
             )
         )
-
-        # # CDK to create a new ACM certificate for ALB
-        # certificate = acm.Certificate(
-        #     self, "VirtualStylistCertificate",
-        #     domain_name= app_service.load_balancer.load_balancer_dns_name,
-        #     validation=acm.CertificateValidation.from_dns(),
-        # )
         
         secrets_manager_policy = iam.Policy(
             self, "SecretsManagerPolicy",
@@ -610,17 +603,6 @@ class VirtualstylistStack(Stack):
         )
 
         log_group.grant_write(app_service.task_definition.execution_role)
-        
-        # add cloudfront to load balancer defined above
-        
-
-        # Output the API Gateway invoke URL
-        # CfnOutput(
-        #     self, "ApiGatewayUrl",
-        #     value=api.url,
-        #     description="API Gateway endpoint URL for dev stage",
-        #     export_name="ApiGatewayUrl"
-        # )
         
         # output Load balancer dns
         CfnOutput(
