@@ -1,6 +1,6 @@
 # Guidance for Virtual Personal Stylist on AWS
 
-This repository contains guidance for implementing an Generative AI powered virtual personal stylist using Amazon Bedrock. The solution is designed for e-commerce businesses looking to enhance customer engagement and provide style recommendations.
+This repository contains guidance for implementing an Generative AI powered virtual personal stylist using Amazon Bedrock. The guidance is designed for e-commerce businesses looking to enhance customer engagement and provide style recommendations.
 
 ## Table of Contents
 
@@ -34,17 +34,17 @@ In the rapidly evolving world of e-commerce, businesses are constantly seeking n
 
 - Scalability of the platform to meet new campaigns/peaks
 
-This is where the power of Generative AI and Amazon Bedrock come into play, enabling the development of solutions like the Virtual Personal Stylist. The virtual personal stylist is a retail solution designed to help e-commerce businesses revolutionize the way they engage with their customers. By leveraging the capabilities of Amazon Bedrock, this solution combines techniques for generating text and images, chat experiences, entity extraction, and retrieval-augmented generation (RAG) to deliver a personalized shopping experience.
+This is where the power of Generative AI and Amazon Bedrock come into play, enabling the development of solutions like the Virtual Personal Stylist. The virtual personal stylist is a retail guidance designed to help e-commerce businesses revolutionize the way they engage with their customers. By leveraging the capabilities of Amazon Bedrock, this guidance combines techniques for generating text and images, chat experiences, entity extraction, and retrieval-augmented generation (RAG) to deliver a personalized shopping experience.
 
 This guidance is designed to showcase how you can leverage Amazon Bedrock, that provides knowledge bases and agents, to build a personalized virtual styling assistant. The goal is to create a new shopping experience for customers where they can interact with an AI-powered stylist to help them put together outfits for specific occasions, such as going back to the office.
 
-By integrating with Amazon Bedrock's Knowledge Bases, the virtual personal stylist solution can provide personalized recommendations based on the customer's past purchases and interests, creating a tailored experience that caters to their unique style and needs.
+By integrating with Amazon Bedrock's Knowledge Bases, the virtual personal stylist guidance can provide personalized recommendations based on the customer's past purchases and interests, creating a tailored experience that caters to their unique style and needs.
 
-Moreover, the solution incorporates a chatbot functionality that allows customers to engage in a conversational interface and ask questions about product reviews, addressing their concerns and building trust. The application can also generate concise summaries of customer reviews, helping shoppers make informed purchasing decisions.
+Moreover, the guidance incorporates a chatbot functionality that allows customers to engage in a conversational interface and ask questions about product reviews, addressing their concerns and building trust. The application can also generate concise summaries of customer reviews, helping shoppers make informed purchasing decisions.
 
-To further enhance the customer experience, the virtual personal stylist solution leverages weather data and recommends complementary accessories, ensuring that customers are prepared for their day-to-day activities.
+To further enhance the customer experience, the virtual personal stylist guidance leverages weather data and recommends complementary accessories, ensuring that customers are prepared for their day-to-day activities.
 
-Key Features for this solution include:
+Key Features for this guidance include:
 
 1. **User Interaction**: The user interacts with the virtual styling assistant through a chat interface, where they can describe their fashion needs, preferences, and any specific occasions they need to dress for.
 
